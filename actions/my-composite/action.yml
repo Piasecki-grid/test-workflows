@@ -1,0 +1,30 @@
+name: 'My Composite Action'
+description: 'A basic composite action example that sets up an environment and runs a command'
+inputs:
+  greeting:
+    description: 'The greeting message to display'
+    required: true
+    default: 'Hello'
+  name:
+    description: 'The name to greet'
+    required: false
+    default: 'World'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Display greeting
+      shell: bash
+      run: echo "${{ inputs.greeting }}, ${{ inputs.name }}!"
+      
+    - name: Set up environment
+      shell: bash
+      run: |
+        echo "Setting up environment..."
+        echo "SETUP_COMPLETE=true" >> $GITHUB_ENV
+        
+    - name: Run a script
+      shell: bash
+      run: |
+        chmod +x ${{ github.action_path }}/scripts/setup.sh
+        ${{ github.action_path }}/scripts/setup.sh "${{ inputs.name }}"
